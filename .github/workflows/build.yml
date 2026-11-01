@@ -14,10 +14,10 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      - name: Setup Files
+      - name: Setup Project Files
         run: |
           mkdir -p app/src/main/java/com/example/antidep app/src/main/res/layout app/src/main/res/xml
-          
+
           cat << 'EOF' > settings.gradle
           pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
           dependencyResolutionManagement { repositories { google(); mavenCentral() } }
@@ -28,172 +28,296 @@ jobs:
           cat << 'EOF' > build.gradle
           plugins {
               id 'com.android.application' version '8.2.2' apply false
-              id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
           }
           EOF
 
           cat << 'EOF' > app/build.gradle
-          plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }
+          plugins {
+              id 'com.android.application'
+          }
           android {
               namespace 'com.example.antidep'
               compileSdk 34
-              defaultConfig { applicationId "com.example.antidep"; minSdk 26; targetSdk 34; versionCode 1; versionName "1.0" }
-              compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
-              kotlinOptions { jvmTarget = '17' }
+              defaultConfig {
+                  applicationId "com.example.antidep"
+                  minSdk 26
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
           }
           EOF
 
           cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application android:label="AntiDep $" android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
-                  <activity android:name=".MainActivity" android:exported="true">
+              <application
+                  android:label="AntiDep $"
+                  android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
                       </intent-filter>
                   </activity>
-                  <receiver android:name=".SavingsWidget" android:exported="true">
-                      <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-                      <meta-data android:name="android.appwidget.provider" android:resource="@xml/savings_widget_info" />
+                  <receiver
+                      android:name=".SavingsWidget"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                      </intent-filter>
+                      <meta-data
+                          android:name="android.appwidget.provider"
+                          android:resource="@xml/savings_widget_info" />
                   </receiver>
               </application>
           </manifest>
           EOF
 
           cat << 'EOF' > app/src/main/res/xml/savings_widget_info.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-              android:minWidth="140dp" android:minHeight="70dp" android:updatePeriodMillis="1800000"
-              android:initialLayout="@layout/widget_savings" android:resizeMode="horizontal|vertical"
+              android:minWidth="140dp"
+              android:minHeight="70dp"
+              android:updatePeriodMillis="1800000"
+              android:initialLayout="@layout/widget_savings"
+              android:resizeMode="horizontal|vertical"
               android:widgetCategory="home_screen" />
           EOF
 
           cat << 'EOF' > app/src/main/res/layout/widget_savings.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/widgetRoot" android:layout_width="match_parent" android:layout_height="match_parent"
-              android:orientation="vertical" android:gravity="center" android:padding="12dp" android:background="#E61A1A1A">
-              <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="БЕЗ ДЕПОВ" android:textColor="#888888" android:textSize="10sp" android:textStyle="bold" />
-              <TextView android:id="@+id/tvWidgetMoney" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="1 день - 20$" android:textColor="#00E676" android:textSize="22sp" android:textStyle="bold" android:layout_marginTop="2dp" />
-              <TextView android:id="@+id/tvWidgetSub" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="Тариф: 20$ / день" android:textColor="#CCCCCC" android:textSize="12sp" />
+              android:id="@+id/widgetRoot"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="12dp"
+              android:background="#E61A1A1A">
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="БЕЗ ДЕПОВ"
+                  android:textColor="#888888"
+                  android:textSize="10sp"
+                  android:textStyle="bold" />
+              <TextView
+                  android:id="@+id/tvWidgetMoney"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="1 день - 20$"
+                  android:textColor="#00E676"
+                  android:textSize="22sp"
+                  android:textStyle="bold"
+                  android:layout_marginTop="2dp" />
+              <TextView
+                  android:id="@+id/tvWidgetSub"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Тариф: 20$ / день"
+                  android:textColor="#CCCCCC"
+                  android:textSize="12sp" />
           </LinearLayout>
           EOF
 
           cat << 'EOF' > app/src/main/res/layout/activity_main.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent" android:layout_height="match_parent"
-              android:orientation="vertical" android:gravity="center" android:padding="24dp" android:background="#121212">
-              <TextView android:id="@+id/tvPreview" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="1 день - 20$" android:textColor="#00E676" android:textSize="28sp" android:textStyle="bold" android:layout_marginBottom="24dp" />
-              <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Сумма в день ($):" android:textColor="#888888" />
-              <EditText android:id="@+id/etDailyAmount" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:textColor="#FFFFFF" android:layout_marginBottom="16dp" />
-              <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="День по счету:" android:textColor="#888888" />
-              <EditText android:id="@+id/etCurrentDays" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:textColor="#FFFFFF" android:layout_marginBottom="24dp" />
-              <Button android:id="@+id/btnSave" android:layout_width="match_parent" android:layout_height="52dp" android:text="СОХРАНИТЬ" android:backgroundTint="#00E676" android:textColor="#000000" />
-              <Button android:id="@+id/btnReset" android:layout_width="match_parent" android:layout_height="44dp" android:layout_marginTop="12dp" android:text="Сбросить на 1 день" android:backgroundTint="#2C2C2E" android:textColor="#FF5252" />
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="24dp"
+              android:background="#121212">
+              <TextView
+                  android:id="@+id/tvPreview"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="1 день - 20$"
+                  android:textColor="#00E676"
+                  android:textSize="28sp"
+                  android:textStyle="bold"
+                  android:layout_marginBottom="24dp" />
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="Сумма в день ($):"
+                  android:textColor="#888888" />
+              <EditText
+                  android:id="@+id/etDailyAmount"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:inputType="number"
+                  android:textColor="#FFFFFF"
+                  android:layout_marginBottom="16dp" />
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="День по счету:"
+                  android:textColor="#888888" />
+              <EditText
+                  android:id="@+id/etCurrentDays"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:inputType="number"
+                  android:textColor="#FFFFFF"
+                  android:layout_marginBottom="24dp" />
+              <Button
+                  android:id="@+id/btnSave"
+                  android:layout_width="match_parent"
+                  android:layout_height="52dp"
+                  android:text="СОХРАНИТЬ"
+                  android:backgroundTint="#00E676"
+                  android:textColor="#000000" />
+              <Button
+                  android:id="@+id/btnReset"
+                  android:layout_width="match_parent"
+                  android:layout_height="44dp"
+                  android:layout_marginTop="12dp"
+                  android:text="Сбросить на 1 день"
+                  android:backgroundTint="#2C2C2E"
+                  android:textColor="#FF5252" />
           </LinearLayout>
           EOF
 
-          cat << 'EOF' > app/src/main/java/com/example/antidep/MainActivity.kt
-          package com.example.antidep
-          import android.app.Activity
-          import android.app.PendingIntent
-          import android.appwidget.AppWidgetManager
-          import android.appwidget.AppWidgetProvider
-          import android.content.ComponentName
-          import android.content.Context
-          import android.content.Intent
-          import android.os.Bundle
-          import android.widget.Button
-          import android.widget.EditText
-          import android.widget.RemoteViews
-          import android.widget.TextView
-          import android.widget.Toast
+          cat << 'EOF' > app/src/main/java/com/example/antidep/MainActivity.java
+          package com.example.antidep;
 
-          class MainActivity : Activity() {
-              override fun onCreate(savedInstanceState: Bundle?) {
-                  super.onCreate(savedInstanceState)
-                  setContentView(R.layout.activity_main)
-                  val prefs = getSharedPreferences("AntiDepPrefs", Context.MODE_PRIVATE)
-                  val tvPreview = findViewById<TextView>(R.id.tvPreview)
-                  val etDailyAmount = findViewById<EditText>(R.id.etDailyAmount)
-                  val etCurrentDays = findViewById<EditText>(R.id.etCurrentDays)
-                  val btnSave = findViewById<Button>(R.id.btnSave)
-                  val btnReset = findViewById<Button>(R.id.btnReset)
+          import android.app.Activity;
+          import android.appwidget.AppWidgetManager;
+          import android.content.ComponentName;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.content.SharedPreferences;
+          import android.os.Bundle;
+          import android.widget.Button;
+          import android.widget.EditText;
+          import android.widget.TextView;
+          import android.widget.Toast;
 
-                  fun getDayString(days: Int): String {
-                      val mod100 = days % 100
-                      val mod10 = days % 10
-                      return when {
-                          mod100 in 11..19 -> "$days дней"
-                          mod10 == 1 -> "$days день"
-                          mod10 in 2..4 -> "$days дня"
-                          else -> "$days дней"
-                      }
-                  }
+          public class MainActivity extends Activity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  setContentView(R.layout.activity_main);
 
-                  fun refreshUI() {
-                      val amount = prefs.getInt("daily_amount", 20)
-                      val startTime = prefs.getLong("start_time", System.currentTimeMillis() - 86400000L)
-                      val days = ((System.currentTimeMillis() - startTime) / 86400000L).toInt().coerceAtLeast(0)
-                      etDailyAmount.setText(amount.toString())
-                      etCurrentDays.setText(days.toString())
-                      tvPreview.text = "${getDayString(days)} - ${days * amount}$"
-                  }
-                  refreshUI()
+                  SharedPreferences prefs = getSharedPreferences("AntiDepPrefs", Context.MODE_PRIVATE);
+                  TextView tvPreview = findViewById(R.id.tvPreview);
+                  EditText etDailyAmount = findViewById(R.id.etDailyAmount);
+                  EditText etCurrentDays = findViewById(R.id.etCurrentDays);
+                  Button btnSave = findViewById(R.id.btnSave);
+                  Button btnReset = findViewById(R.id.btnReset);
 
-                  btnSave.setOnClickListener {
-                      val amount = etDailyAmount.text.toString().toIntOrNull() ?: 20
-                      val days = etCurrentDays.text.toString().toLongOrNull() ?: 1L
-                      prefs.edit().putInt("daily_amount", amount).putLong("start_time", System.currentTimeMillis() - (days * 86400000L)).apply()
-                      refreshUI()
-                      updateWidgets()
-                      Toast.makeText(this, "Обновлено!", Toast.LENGTH_SHORT).show()
-                  }
+                  updateUI(prefs, tvPreview, etDailyAmount, etCurrentDays);
 
-                  btnReset.setOnClickListener {
-                      val amount = etDailyAmount.text.toString().toIntOrNull() ?: 20
-                      prefs.edit().putInt("daily_amount", amount).putLong("start_time", System.currentTimeMillis() - 86400000L).apply()
-                      refreshUI()
-                      updateWidgets()
-                      Toast.makeText(this, "Сброшено!", Toast.LENGTH_SHORT).show()
-                  }
+                  btnSave.setOnClickListener(v -> {
+                      String amountStr = etDailyAmount.getText().toString().trim();
+                      String daysStr = etCurrentDays.getText().toString().trim();
+                      int amount = amountStr.isEmpty() ? 20 : Integer.parseInt(amountStr);
+                      long days = daysStr.isEmpty() ? 1L : Long.parseLong(daysStr);
+
+                      long calculatedStartTime = System.currentTimeMillis() - (days * 86400000L);
+                      prefs.edit()
+                              .putInt("daily_amount", amount)
+                              .putLong("start_time", calculatedStartTime)
+                              .apply();
+
+                      updateUI(prefs, tvPreview, etDailyAmount, etCurrentDays);
+                      updateWidgets();
+                      Toast.makeText(this, "Обновлено!", Toast.LENGTH_SHORT).show();
+                  });
+
+                  btnReset.setOnClickListener(v -> {
+                      String amountStr = etDailyAmount.getText().toString().trim();
+                      int amount = amountStr.isEmpty() ? 20 : Integer.parseInt(amountStr);
+                      long oneDayAgo = System.currentTimeMillis() - 86400000L;
+
+                      prefs.edit()
+                              .putInt("daily_amount", amount)
+                              .putLong("start_time", oneDayAgo)
+                              .apply();
+
+                      updateUI(prefs, tvPreview, etDailyAmount, etCurrentDays);
+                      updateWidgets();
+                      Toast.makeText(this, "Сброшено на 1 день", Toast.LENGTH_SHORT).show();
+                  });
               }
 
-              private fun updateWidgets() {
-                  val intent = Intent(this, SavingsWidget::class.java).apply {
-                      action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                      val ids = AppWidgetManager.getInstance(application).getAppWidgetIds(ComponentName(application, SavingsWidget::class.java))
-                      putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-                  }
-                  sendBroadcast(intent)
+              private void updateUI(SharedPreferences prefs, TextView tvPreview, EditText etDailyAmount, EditText etCurrentDays) {
+                  int amount = prefs.getInt("daily_amount", 20);
+                  long startTime = prefs.getLong("start_time", System.currentTimeMillis() - 86400000L);
+                  int days = (int) Math.max(0, (System.currentTimeMillis() - startTime) / 86400000L);
+                  int total = days * amount;
+
+                  etDailyAmount.setText(String.valueOf(amount));
+                  etCurrentDays.setText(String.valueOf(days));
+                  tvPreview.setText(SavingsWidget.formatDays(days) + " - " + total + "$");
+              }
+
+              private void updateWidgets() {
+                  Intent intent = new Intent(this, SavingsWidget.class);
+                  intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                  int[] ids = AppWidgetManager.getInstance(getApplication())
+                          .getAppWidgetIds(new ComponentName(getApplication(), SavingsWidget.class));
+                  intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                  sendBroadcast(intent);
               }
           }
+          EOF
 
-          class SavingsWidget : AppWidgetProvider() {
-              override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-                  for (id in appWidgetIds) {
-                      val prefs = context.getSharedPreferences("AntiDepPrefs", Context.MODE_PRIVATE)
-                      val amount = prefs.getInt("daily_amount", 20)
-                      val startTime = prefs.getLong("start_time", System.currentTimeMillis() - 86400000L)
-                      val days = ((System.currentTimeMillis() - startTime) / 86400000L).toInt().coerceAtLeast(0)
-                      val total = days * amount
-                      val mod100 = days % 100
-                      val mod10 = days % 10
-                      val dayStr = when {
-                          mod100 in 11..19 -> "$days дней"
-                          mod10 == 1 -> "$days день"
-                          mod10 in 2..4 -> "$days дня"
-                          else -> "$days дней"
-                      }
-                      val views = RemoteViews(context.packageName, R.layout.widget_savings)
-                      views.setTextViewText(R.id.tvWidgetMoney, "$dayStr - ${total}$")
-                      views.setTextViewText(R.id.tvWidgetSub, "Тариф: ${amount}$ / день")
-                      val intent = Intent(context, MainActivity::class.java)
-                      val pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                      views.setOnClickListenerPendingIntent(R.id.widgetRoot, pi)
-                      appWidgetManager.updateAppWidget(id, views)
+          cat << 'EOF' > app/src/main/java/com/example/antidep/SavingsWidget.java
+          package com.example.antidep;
+
+          import android.app.PendingIntent;
+          import android.appwidget.AppWidgetManager;
+          import android.appwidget.AppWidgetProvider;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.content.SharedPreferences;
+          import android.widget.RemoteViews;
+
+          public class SavingsWidget extends AppWidgetProvider {
+              public static String formatDays(int days) {
+                  int mod100 = days % 100;
+                  int mod10 = days % 10;
+                  if (mod100 >= 11 && mod100 <= 19) {
+                      return days + " дней";
+                  }
+                  if (mod10 == 1) {
+                      return days + " день";
+                  }
+                  if (mod10 >= 2 && mod10 <= 4) {
+                      return days + " дня";
+                  }
+                  return days + " дней";
+              }
+
+              @Override
+              public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+                  for (int id : appWidgetIds) {
+                      SharedPreferences prefs = context.getSharedPreferences("AntiDepPrefs", Context.MODE_PRIVATE);
+                      int amount = prefs.getInt("daily_amount", 20);
+                      long startTime = prefs.getLong("start_time", System.currentTimeMillis() - 86400000L);
+                      int days = (int) Math.max(0, (System.currentTimeMillis() - startTime) / 86400000L);
+                      int total = days * amount;
+
+                      RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_savings);
+                      views.setTextViewText(R.id.tvWidgetMoney, formatDays(days) + " - " + total + "$");
+                      views.setTextViewText(R.id.tvWidgetSub, "Тариф: " + amount + "$ / день");
+
+                      Intent intent = new Intent(context, MainActivity.class);
+                      PendingIntent pi = PendingIntent.getActivity(context, 0, intent,
+                              PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                      views.setOnClickPendingIntent(R.id.widgetRoot, pi);
+
+                      appWidgetManager.updateAppWidget(id, views);
                   }
               }
           }
@@ -207,3 +331,4 @@ jobs:
         with:
           name: AntiDep-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+          
