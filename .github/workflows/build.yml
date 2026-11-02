@@ -42,8 +42,8 @@ jobs:
                   applicationId "com.example.antidep"
                   minSdk 26
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "1.1"
               }
               compileOptions {
                   sourceCompatibility JavaVersion.VERSION_17
@@ -112,9 +112,9 @@ jobs:
                   android:id="@+id/tvWidgetMoney"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="1 день - 20$"
+                  android:text="Сэкономлено - 20$"
                   android:textColor="#00E676"
-                  android:textSize="22sp"
+                  android:textSize="20sp"
                   android:textStyle="bold"
                   android:layout_marginTop="2dp" />
               <TextView
@@ -140,9 +140,9 @@ jobs:
                   android:id="@+id/tvPreview"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="1 день - 20$"
+                  android:text="Сэкономлено - 20$"
                   android:textColor="#00E676"
-                  android:textSize="28sp"
+                  android:textSize="26sp"
                   android:textStyle="bold"
                   android:layout_marginBottom="24dp" />
               <TextView
@@ -160,7 +160,7 @@ jobs:
               <TextView
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:text="День по счету:"
+                  android:text="День по счету (считается сам):"
                   android:textColor="#888888" />
               <EditText
                   android:id="@+id/etCurrentDays"
@@ -258,7 +258,7 @@ jobs:
 
                   etDailyAmount.setText(String.valueOf(amount));
                   etCurrentDays.setText(String.valueOf(days));
-                  tvPreview.setText(SavingsWidget.formatDays(days) + " - " + total + "$");
+                  tvPreview.setText("Сэкономлено - " + total + "$");
               }
 
               private void updateWidgets() {
@@ -284,21 +284,6 @@ jobs:
           import android.widget.RemoteViews;
 
           public class SavingsWidget extends AppWidgetProvider {
-              public static String formatDays(int days) {
-                  int mod100 = days % 100;
-                  int mod10 = days % 10;
-                  if (mod100 >= 11 && mod100 <= 19) {
-                      return days + " дней";
-                  }
-                  if (mod10 == 1) {
-                      return days + " день";
-                  }
-                  if (mod10 >= 2 && mod10 <= 4) {
-                      return days + " дня";
-                  }
-                  return days + " дней";
-              }
-
               @Override
               public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
                   for (int id : appWidgetIds) {
@@ -308,8 +293,8 @@ jobs:
                       int days = (int) Math.max(0, (System.currentTimeMillis() - startTime) / 86400000L);
                       int total = days * amount;
 
-                      RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_savings);
-                      views.setTextViewText(R.id.tvWidgetMoney, formatDays(days) + " - " + total + "$");
+                      RemoteViews views = new RemoteViews(context.packageName, R.layout.widget_savings);
+                      views.setTextViewText(R.id.tvWidgetMoney, "Сэкономлено - " + total + "$");
                       views.setTextViewText(R.id.tvWidgetSub, "Тариф: " + amount + "$ / день");
 
                       Intent intent = new Intent(context, MainActivity.class);
