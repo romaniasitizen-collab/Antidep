@@ -38,8 +38,8 @@ jobs:
                   applicationId "com.example.antidep"
                   minSdk 26
                   targetSdk 34
-                  versionCode 11
-                  versionName "2.1"
+                  versionCode 12
+                  versionName "2.2"
               }
               compileOptions {
                   sourceCompatibility JavaVersion.VERSION_17
@@ -58,7 +58,7 @@ jobs:
                           <category android:name="android.intent.category.LAUNCHER" />
                       </intent-filter>
                   </activity>
-                  <receiver android:name=".SavingsWidget" android:exported="true">
+                  <receiver android:name=".SavingsWidget" android:exported="true" android:label="&#8203;">
                       <intent-filter>
                           <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                       </intent-filter>
